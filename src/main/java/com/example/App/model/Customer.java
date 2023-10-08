@@ -26,6 +26,7 @@ public class Customer {
 	private String city;
 	private String zipCode;
 	private String email;
+	
 	private String password;
 	
 	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)

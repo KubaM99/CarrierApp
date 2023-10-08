@@ -10,15 +10,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.App.dto.AddCarrierGetDTO;
+import com.example.App.dto.AddCarrierPostDTO;
 import com.example.App.dto.CarrierPostDTO;
 import com.example.App.model.Carrier;
 import com.example.App.model.CarrierDelivery;
+import com.example.App.model.Customer;
 import com.example.App.model.Delivery;
 import com.example.App.repo.DeliveryRepo;
 import com.example.App.service.CarrierDeliveryService;
 import com.example.App.service.CarrierService;
 import com.example.App.service.DeliveryService;
 
+import jakarta.validation.Valid;
 import lombok.experimental.var;
 
 @RestController
@@ -43,13 +47,35 @@ public class CarrierController {
 		
 	}
 	@PostMapping("/addCarrier")
-	public  ResponseEntity<Carrier> addCarrier(@RequestBody Carrier carrier){
+	public  ResponseEntity<AddCarrierGetDTO> addCarrier(@Valid @RequestBody AddCarrierPostDTO carrierDTO){
 		
-		Carrier c = carrierService.saveCarrier(carrier);
+		var acgd = new AddCarrierGetDTO();
+		
+			
+			var c = new Carrier(			
+				carrierDTO.getFirstName(),					
+				carrierDTO.getLastName(),
+				carrierDTO.getPhone(),
+				carrierDTO.getAddress(),
+				carrierDTO.getCity(),
+				carrierDTO.getZipCode(),
+				carrierDTO.getEmail(),
+				carrierDTO.getPassword());
 		
 		
 		
-		return ResponseEntity.ok(c);
+			acgd.setFirstName(carrierDTO.getFirstName());
+			acgd.setLastName(carrierDTO.getLastName());
+			acgd.setEmail(carrierDTO.getEmail());
+			
+		carrierService.saveCarrier(c);
+
+			
+		
+				
+		return  ResponseEntity.ok(acgd);
+		
+		
 	}
 	
 

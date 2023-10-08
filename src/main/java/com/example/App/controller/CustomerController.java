@@ -49,7 +49,7 @@ public class CustomerController {
 		
 		var customer = new Customer(			
 						cpDTO.getFirstName(),					
-						cpDTO.getFirstName(),
+						cpDTO.getLastName(),
 						cpDTO.getPhone(),
 						cpDTO.getAddress(),
 						cpDTO.getCity(),

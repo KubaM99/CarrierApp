@@ -36,5 +36,14 @@ public class CarrierService {
 		
 	}
 	
+	public boolean isEmailValid(String email) {
+		
+		Optional<Carrier> carrier = carrierRepo.findByEmail(email);
+		
+		if(carrier.isPresent()) return true;
+		return false;
+		
+	}
+	
 
 }

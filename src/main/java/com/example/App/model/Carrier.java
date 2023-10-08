@@ -6,9 +6,11 @@ import org.hibernate.annotations.GeneratorType;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.ValueGenerationType;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import jakarta.annotation.Generated;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,6 +20,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
 
 @Entity
@@ -43,6 +46,7 @@ public class Carrier {
 	private String address;
 	private String city;
 	private String zipCode;
+	@Column(unique = true)
 	private String email;
 	private String password;
 	
@@ -53,13 +57,10 @@ public class Carrier {
 	
 	
 
-	
 
-
-	public Carrier(Long carrierId, String firstName, String lastName, String phone, String address, String city,
-			String zipCode, String email, String password, List<Delivery> deliveries) {
+	public Carrier(String firstName, String lastName, String phone, String address, String city, String zipCode,
+			String email, String password) {
 		super();
-		//this.carrierId = carrierId;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.phone = phone;
@@ -68,7 +69,6 @@ public class Carrier {
 		this.zipCode = zipCode;
 		this.email = email;
 		this.password = password;
-		this.deliveries = deliveries;
 	}
 
 
