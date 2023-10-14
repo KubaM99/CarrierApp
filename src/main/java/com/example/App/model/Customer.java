@@ -1,42 +1,87 @@
 package com.example.App.model;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
-@Table(name = "CUSTOMER")
 @Entity
-public class Customer {
-	
+@Table(name = "CUSTOMER")
+public class Customer implements UserDetails {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "user_id")
 	private Long id;
 
 	private String firstName;
 	private String lastName;
-	private String phone;	
+	private String phone;
 	private String address;
 	private String city;
 	private String zipCode;
 	private String email;
-	
 	private String password;
-	
+
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "role_join_user", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "role_id") })
+	private Set<Role> authoritis;
+
+
 	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Delivery> deliveries;
+
 	
-	public Customer () {}
+	public Customer() {
+	}
+
+	// sec
+	public Customer(Long id, String email, String password, Set<Role> authoritis) {
+		super();
+		this.id = id;
+		this.email = email;
+		this.password = password;
+		this.authoritis = authoritis;
+	}
+
+	// sec( part 2 )
+	public Customer(Long id, String firstName, String lastName, String phone, String address, String city,
+			String zipCode, Set<Role> authoritis, String email, String password, List<Delivery> deliveries) {
+		super();
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.phone = phone;
+		this.address = address;
+		this.city = city;
+		this.zipCode = zipCode;
+		this.authoritis = authoritis;
+		this.email = email;
+		this.password = password;
+		this.deliveries = deliveries;
+	}
 
 	public Customer(String firstName, String lastName, String phone, String address, String city, String zipCode,
 			String email, String password) {
-		
+
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.phone = phone;
@@ -46,24 +91,12 @@ public class Customer {
 		this.email = email;
 		this.password = password;
 	}
-	
-	
 
 	public Customer(String firstName, String email) {
 		super();
 		this.firstName = firstName;
 		this.email = email;
 	}
-	
-	public Customer(Long id,String firstName, String email) {
-		super();
-		this.id =id;
-		this.firstName = firstName;
-		this.email = email;
-	}
-	
-
-
 
 	public String getFirstName() {
 		return firstName;
@@ -121,8 +154,6 @@ public class Customer {
 		this.email = email;
 	}
 
-
-
 	public Long getId() {
 		return id;
 	}
@@ -131,44 +162,56 @@ public class Customer {
 		this.id = id;
 	}
 
+	public Set<Role> getAuthoritis() {
+		return authoritis;
+	}
+
+	public void setAuthoritis(Set<Role> authoritis) {
+		this.authoritis = authoritis;
+	}
 
 
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return this.authoritis;
+	}
+
+	// Email as UserName
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return this.email;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
 	public String getPassword() {
-		return password;
+		// TODO Auto-generated method stub
+		return this.password;
 	}
 
-
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(email);
-	}
-
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Customer other = (Customer) obj;
-		return Objects.equals(email, other.email);
-	}
-	
-	
-
-
-
-	
-	
-	
 }

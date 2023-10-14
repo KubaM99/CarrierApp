@@ -31,19 +31,7 @@ public class CustomerPostDTO {
 	
 	private String password;
 	
-	//public CustomerPostDTO(String firstName, String lastName, String phone, String address, String city, String zipCode,
-	//		String email, String password) {
-	//	super();
-	//	this.firstName = firstName;
-	//	this.lastName = lastName;
-	//	this.phone = phone;
-	//	this.address = address;
-	//	this.city = city;
-	//	this.zipCode = zipCode;
-	//	this.email = email;
-	//	this.password = password;
-	//}
-	//
+
 	public String getFirstName() {
 		return firstName;
 	}

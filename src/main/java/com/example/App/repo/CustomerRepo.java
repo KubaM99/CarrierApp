@@ -18,8 +18,12 @@ public interface CustomerRepo extends JpaRepository<Customer, Long> {
 	@Query("DELETE Customer c WHERE c.email =?1")
 	void deleteByEmail(String email);
 	
-	public Customer findByEmail(String email);
+	@Modifying
+	@Query("SELECT count(c) = 1 from Customer c where c.email = ?1")
+	public boolean findExistByEmial(String email);
 	
+	
+	public Optional<Customer> findByEmail(String email);
 	
 	
 }

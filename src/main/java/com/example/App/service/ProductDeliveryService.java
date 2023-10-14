@@ -59,7 +59,7 @@ public class ProductDeliveryService {
 
 	}
 	
-	public static double getTotalprice(List<ProductDelivery> dp) {
+	public double getTotalprice(List<ProductDelivery> dp) {
 		
 		double sum = 0;
 		for(ProductDelivery x : dp) {
