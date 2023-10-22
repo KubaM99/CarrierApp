@@ -23,18 +23,13 @@ import lombok.experimental.var;
 
 @Component
 @Transactional
-public class CustomerService implements UserDetailsService {
+public class CustomerService  {
 
 	@Autowired
 	private CustomerRepo customerRepo;
 	
 	@Autowired
 	private PasswordEncoder encoder;
-	
-	
-	
-	
-	
 
 	public Customer saveCustomer(Customer customer) {
 		return customerRepo.save(customer);
@@ -57,19 +52,14 @@ public class CustomerService implements UserDetailsService {
 
 	}
 
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 	    
-	    
-	    System.out.println("user details");
-	    
-	    if(!username.equals("xyz@com.pl"))
-		throw new UsernameNotFoundException("not found");
-	    
-	    Set<Role> rols = new HashSet<>();
-	    rols.add(new Role(1L,"USER"));
-	    
-		return new Customer(1L,"xyz@com.pl",encoder.encode("pssword"),rols);
-	}
-
+	//ername.equals("xyz@com.pl"))
+	//row new UsernameNotFoundException("not found");
+	//
+	//le> rols = new HashSet<>();
+	//dd(new Role(1L,"USER"));
+	//
+	//turn new Customer(1L,"xyz@com.pl",encoder.encode("pssword"),rols);
 }
+
+

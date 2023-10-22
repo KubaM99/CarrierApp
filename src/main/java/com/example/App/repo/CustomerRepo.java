@@ -22,6 +22,7 @@ public interface CustomerRepo extends JpaRepository<Customer, Long> {
 	@Query("SELECT count(c) = 1 from Customer c where c.email = ?1")
 	public boolean findExistByEmial(String email);
 	
+	Boolean existsByEmail(String eemail);
 	
 	public Optional<Customer> findByEmail(String email);
 	

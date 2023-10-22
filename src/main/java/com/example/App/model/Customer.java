@@ -36,6 +36,7 @@ public class Customer implements UserDetails {
 	private String address;
 	private String city;
 	private String zipCode;
+	@Column(nullable = false,unique = true)
 	private String email;
 	private String password;
 
