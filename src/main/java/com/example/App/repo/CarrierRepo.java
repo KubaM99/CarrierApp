@@ -13,6 +13,8 @@ public interface CarrierRepo  extends JpaRepository<Carrier, Long> {
 	Optional<Carrier> findById(Long id);
 	
 	Optional<Carrier> findByEmail(String email);
+	
+	Boolean existsByEmail(String eemail);
 
 	
 	

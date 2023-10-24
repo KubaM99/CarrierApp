@@ -6,8 +6,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import com.example.App.model.Customer;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -33,6 +37,7 @@ public class JwtService {
 	return Jwts.builder()
 		.setClaims(claims)
 		.setSubject(userDetails.getUsername())
+		.claim("rols", userDetails.getAuthorities())
 		.setIssuedAt(new Date(System.currentTimeMillis()))
 		.setExpiration(new Date(System.currentTimeMillis()+1000*60*24))
 		.signWith(signKey(),SignatureAlgorithm.HS256)
@@ -80,5 +85,5 @@ public class JwtService {
 	return extractClaim(token, Claims::getExpiration );
     }
     
-    
+   
 }

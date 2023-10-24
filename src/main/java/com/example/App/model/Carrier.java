@@ -1,22 +1,33 @@
 package com.example.App.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.annotations.GeneratorType;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.ValueGenerationType;
 import org.hibernate.validator.constraints.UniqueElements;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.annotation.Generated;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -25,51 +36,48 @@ import lombok.Data;
 
 @Entity
 @Table(name = "CARRIER")
-public class Carrier {
+public class Carrier implements UserDetails  {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "carrierIdGen" )
-	@SequenceGenerator(name = "carrierIdGen", initialValue = 1000)
+    	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+    	@Column(name = "user_id")
 	private Long id;
-	
-	
-	//@GenericGenerator(name = "carierIdGenerateSeq",strategy = "enhanced-sequence",
-	//		parameters = {
-	//				@Parameter(name = "sequence_name", value = "JPWH_SEQUENCE\""),
-	//				@Parameter(name = "initial_value", value = "1000")
-	//		})
-	
-	//private Long carrierId;
 	private String firstName;
 	private String lastName;
 	private String phone;	
 	private String address;
 	private String city;
 	private String zipCode;
-	@Column(unique = true)
+	@Column(nullable = false,unique = true)
 	private String email;
 	private String password;
 	
 	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(name = "carrier")
+	@JoinColumn(name = "carrier")//carrier
 	private List<Delivery> deliveries;
+	
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "role_join_user", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "role_id") })
+	private Set<Role> rols;
 	
 	
 
 
 	public Carrier(String firstName, String lastName, String phone, String address, String city, String zipCode,
-			String email, String password) {
-		super();
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.phone = phone;
-		this.address = address;
-		this.city = city;
-		this.zipCode = zipCode;
-		this.email = email;
-		this.password = password;
-	}
+		String email, String password) {
+	    
+        	this.firstName = firstName;
+        	this.lastName = lastName;
+        	this.phone = phone;
+        	this.address = address;
+        	this.city = city;
+        	this.zipCode = zipCode;
+        	this.email = email;
+        	this.password = password;
+
+		}
 
 
 	public Carrier() {
@@ -185,6 +193,66 @@ public class Carrier {
 	public void setDeliveries(List<Delivery> deliveries) {
 		this.deliveries = deliveries;
 	}
+
+
+	@JsonIgnore
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+	    	List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+	        for (Role role : rols) {
+	            authorities.add(new SimpleGrantedAuthority(role.getAuthority()));
+	        }
+	        return authorities;
+	
+	}
+
+
+	@Override
+	public String getUsername() {
+	    // TODO Auto-generated method stub
+	    return this.email;
+	}
+
+
+	@Override
+	public boolean isAccountNonExpired() {
+	    // TODO Auto-generated method stub
+	    return true;
+	}
+
+
+	@Override
+	public boolean isAccountNonLocked() {
+	    // TODO Auto-generated method stub
+	    return true;
+	}
+
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+	    // TODO Auto-generated method stub
+	    return true;
+	}
+
+
+	@Override
+	public boolean isEnabled() {
+	    // TODO Auto-generated method stub
+	    return true;
+	}
+
+
+	
+	
+	public Set<Role> getAuthoritis() {
+		return rols;
+	}
+        
+	public void setAuthoritis(Set<Role> authoritis) {
+		this.rols = authoritis;
+	}
+        
+
 	
 	
 	

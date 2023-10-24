@@ -17,7 +17,6 @@ import com.example.App.repo.CustomerRepo;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
-@RequiredArgsConstructor
 public class UserAppConfig {
     
     @Autowired

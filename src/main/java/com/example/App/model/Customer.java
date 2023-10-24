@@ -1,12 +1,17 @@
 package com.example.App.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -26,7 +31,7 @@ import jakarta.persistence.Table;
 public class Customer implements UserDetails {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "user_id")
 	private Long id;
 
@@ -44,7 +49,7 @@ public class Customer implements UserDetails {
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "role_join_user", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "role_id") })
-	private Set<Role> authoritis;
+	private Set<Role> rols;
 
 
 	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -60,7 +65,7 @@ public class Customer implements UserDetails {
 		this.id = id;
 		this.email = email;
 		this.password = password;
-		this.authoritis = authoritis;
+		this.rols = authoritis;
 	}
 
 	// sec( part 2 )
@@ -74,7 +79,7 @@ public class Customer implements UserDetails {
 		this.address = address;
 		this.city = city;
 		this.zipCode = zipCode;
-		this.authoritis = authoritis;
+		this.rols = authoritis;
 		this.email = email;
 		this.password = password;
 		this.deliveries = deliveries;
@@ -164,18 +169,23 @@ public class Customer implements UserDetails {
 	}
 
 	public Set<Role> getAuthoritis() {
-		return authoritis;
+		return rols;
 	}
 
 	public void setAuthoritis(Set<Role> authoritis) {
-		this.authoritis = authoritis;
+		this.rols = authoritis;
 	}
 
-
+	
+	@JsonIgnore
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return this.authoritis;
+	    	List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+	        for (Role role : rols) {
+	            authorities.add(new SimpleGrantedAuthority(role.getAuthority()));
+	        }
+	        return authorities;
+	
 	}
 
 	// Email as UserName

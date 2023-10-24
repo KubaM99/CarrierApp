@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +28,7 @@ import jakarta.validation.Valid;
 import lombok.experimental.var;
 
 @RestController
-@RequestMapping("api/v1/customer")
+@RequestMapping("/customer")
 public class CustomerController {
 	
 	
@@ -36,6 +38,14 @@ public class CustomerController {
 	private DeliveryService deliveryService;
 	@Autowired
 	private ProductDeliveryService productDeliveryService;
+	
+	
+	@GetMapping("/user")
+	public ResponseEntity<Customer> getUserInfo() {
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    Customer user = (Customer) authentication.getPrincipal();
+	    return ResponseEntity.ok(user);
+	}
 	
 	@GetMapping("/getAllCustomers")
 	public ResponseEntity<List<Customer>> getAllCustomers(){
