@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.App.model.Delivery;
 import com.example.App.model.Product;
+import com.example.App.repo.DeliveryRepo;
 import com.example.App.service.ProductService;
 
 @RestController
@@ -15,6 +17,8 @@ public class ProductsController {
 
 	@Autowired
 	private ProductService productService;
+	@Autowired
+	private DeliveryRepo deliveryRepo;
 	
 	@GetMapping("/getAllProduct")
 	public ResponseEntity<List<Product>> getAllProductus(){
@@ -23,4 +27,7 @@ public class ProductsController {
 
         return ResponseEntity.ok(productList);
 	}
+	
+
+	
 }

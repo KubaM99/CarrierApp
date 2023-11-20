@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.App.maper.DeliveryMaper;
+import com.example.App.model.Delivery;
 import com.example.App.model.ProductDelivery;
 
 
@@ -18,7 +19,13 @@ public class DeliveryResponseDTO {
 	private List<ProductDeliveryDTO> productDeliveryDTOs;
 	
 	
+		
 	
+
+
+
+
+
 	public Long getOrderId() {
 		return orderId;
 	}

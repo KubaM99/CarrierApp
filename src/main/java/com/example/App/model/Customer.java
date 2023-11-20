@@ -24,15 +24,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "CUSTOMER")
-public class Customer implements UserDetails {
+public class Customer  {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	@Column(name = "user_id")
+	@Column(name =  "id")
 	private Long id;
 
 	private String firstName;
@@ -46,47 +47,19 @@ public class Customer implements UserDetails {
 	private String password;
 
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "role_join_user", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
-			@JoinColumn(name = "role_id") })
-	private Set<Role> rols;
+	@OneToOne(cascade = CascadeType.ALL)
+	    @JoinColumn(name = "user_id", referencedColumnName = "id")
+	    private AppUser appuser;
 
 
-	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Delivery> deliveries;
+	//@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+	//private List<Delivery> deliveries;
 
 	
-	public Customer() {
-	}
-
-	// sec
-	public Customer(Long id, String email, String password, Set<Role> authoritis) {
-		super();
-		this.id = id;
-		this.email = email;
-		this.password = password;
-		this.rols = authoritis;
-	}
-
-	// sec( part 2 )
-	public Customer(Long id, String firstName, String lastName, String phone, String address, String city,
-			String zipCode, Set<Role> authoritis, String email, String password, List<Delivery> deliveries) {
-		super();
-		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.phone = phone;
-		this.address = address;
-		this.city = city;
-		this.zipCode = zipCode;
-		this.rols = authoritis;
-		this.email = email;
-		this.password = password;
-		this.deliveries = deliveries;
-	}
+	public Customer() {}
 
 	public Customer(String firstName, String lastName, String phone, String address, String city, String zipCode,
-			String email, String password) {
+			String email, String password,AppUser appuser) {
 
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -96,6 +69,7 @@ public class Customer implements UserDetails {
 		this.zipCode = zipCode;
 		this.email = email;
 		this.password = password;
+		this.appuser = appuser;
 	}
 
 	public Customer(String firstName, String email) {
@@ -168,61 +142,33 @@ public class Customer implements UserDetails {
 		this.id = id;
 	}
 
-	public Set<Role> getAuthoritis() {
-		return rols;
-	}
-
-	public void setAuthoritis(Set<Role> authoritis) {
-		this.rols = authoritis;
-	}
-
-	
-	@JsonIgnore
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-	    	List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-	        for (Role role : rols) {
-	            authorities.add(new SimpleGrantedAuthority(role.getAuthority()));
-	        }
-	        return authorities;
-	
-	}
-
-	// Email as UserName
-	@Override
-	public String getUsername() {
-		// TODO Auto-generated method stub
-		return this.email;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
 	public String getPassword() {
-		// TODO Auto-generated method stub
-		return this.password;
+	    return password;
 	}
+
+	public void setPassword(String password) {
+	    this.password = password;
+	}
+
+	public AppUser getAppuser() {
+	    return appuser;
+	}
+
+	public void setAppuser(AppUser appuser) {
+	    this.appuser = appuser;
+	}
+
+	//public List<Delivery> getDeliveries() {
+	//    return deliveries;
+	//}
+        //
+	//public void setDeliveries(List<Delivery> deliveries) {
+	//    this.deliveries = deliveries;
+	//}
+        //
+	
+	
+	
+	
 
 }

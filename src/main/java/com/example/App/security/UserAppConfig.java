@@ -12,7 +12,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.example.App.repo.CarrierRepo;
 import com.example.App.repo.CustomerRepo;
+import com.example.App.repo.UserRepo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,21 +22,23 @@ import lombok.RequiredArgsConstructor;
 public class UserAppConfig {
     
     @Autowired
-    private CustomerRepo customerRepo;
+    private UserRepo userRepo;
+    
     
     @Bean
-    public UserDetailsService userDetailsService() {
-      return username -> customerRepo.findByEmail(username)
-          .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public UserDetailsService userDetailsServiceCustomer() {
+      return username -> userRepo.findByEmail(username)
+          .orElseThrow(() -> new UsernameNotFoundException("Customer not found"));
     }
     
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider authenticationProviderCustomer() {
       DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-      authProvider.setUserDetailsService(userDetailsService());
+      authProvider.setUserDetailsService(userDetailsServiceCustomer());
       authProvider.setPasswordEncoder(passwordEncoder());
       return authProvider;
     }
+    
     
     @Bean
     public PasswordEncoder passwordEncoder() {

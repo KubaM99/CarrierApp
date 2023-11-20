@@ -12,7 +12,7 @@ public interface ProductRepo extends JpaRepository<Product, Long> {
 
 	
 
-	public Product findBySku(Long sku);
+	public Optional<Product> findBySku(Long sku);
 	
 
 

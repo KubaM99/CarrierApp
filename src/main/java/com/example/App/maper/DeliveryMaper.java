@@ -25,7 +25,7 @@ import lombok.experimental.var;
 public class DeliveryMaper {
 
 	// nie dział optional, 500 Internal Server Error
-	public List<ProductDeliveryDTO> toDTO(List<ProductDelivery> productDelivery) {
+	public static List<ProductDeliveryDTO> toDTO(List<ProductDelivery> productDelivery) {
 
 		List<ProductDeliveryDTO> dto = new ArrayList<>();
 

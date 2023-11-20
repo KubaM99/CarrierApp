@@ -46,11 +46,11 @@ public class CustomerService  {
 		return Optional.ofNullable(c);
 	}
 
-	public void delteleCustomer(String email) {
-
-		customerRepo.deleteByEmail(email);
-
-	}
+	//public void delteleCustomer(String email) {
+        //
+	//	customerRepo.deleteByEmail(email);
+        //
+	//}
 
 	    
 	//ername.equals("xyz@com.pl"))

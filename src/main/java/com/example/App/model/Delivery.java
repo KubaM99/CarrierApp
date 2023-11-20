@@ -1,10 +1,13 @@
 package com.example.App.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SourceType;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -22,86 +25,126 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "delivery")
-public class Delivery {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	
-	
-	@ManyToOne
-	@JoinColumn(name = "customer")
-	private Customer customer;
-	//@ManyToOne
-	//@JoinColumn(name = "carrier")
-	//private Carrier carrier;
-	
-	
-	
-	
-	@CreationTimestamp(source = SourceType.DB)
-	@Temporal(TemporalType.DATE)
-	private Date createdDate;
-	
-	private double totalPris;
-	
-	//fetch = FetchType.LAZY
-	@OneToMany(mappedBy = "delivery",cascade = CascadeType.ALL , orphanRemoval = true)
-	private List<ProductDelivery> productDelivery;
+public class Delivery implements Serializable {
 
-	public Delivery(Customer customer) {
-		super();
-		this.customer = customer;
-		
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	public Delivery() {
-		super();
-	}
+    
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "appUser")
+    private Customer appUser;
+    
+    
+    @ManyToOne
+    @JoinColumn(name = "carrier")
+    private Carrier carrier;
 
-	public Long getId() {
-		return id;
-	}
+    @CreationTimestamp(source = SourceType.DB)
+    @Temporal(TemporalType.DATE)
+    private Date createdDate;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    private double totalPris;
 
-	public Customer getCustomer() {
-		return customer;
-	}
+  
+    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true, fetch =FetchType.LAZY)
+    private List<ProductDelivery> productDelivery;
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
+    public Delivery(Customer appUser) {
+	super();
+	this.appUser = appUser;
+	this.delivered = false;
+	this.took = false;
 
-	public Date getCreatedDate() {
-		return createdDate;
-	}
+    }
 
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
+    public Delivery(Customer appUser, Date createdDate, double totalPris, List<ProductDelivery> productDelivery) {
+	super();
+	this.appUser = appUser;
+	//this.productDelivery = productDelivery;
+    }
 
-	public double getTotalPris() {
-		return totalPris;
-	}
+    private boolean delivered;
 
-	public void setTotalPris(Double totalPris) {
-		this.totalPris = totalPris;
-	}
+    private boolean took;
 
-	
-	
-	
-	
-	
-	
-	
+    public Delivery() {
+	super();
+    }
+
+    public Long getId() {
+	return id;
+    }
+
+    public void setId(Long id) {
+	this.id = id;
+    }
+
+    public Customer getCustomer() {
+	return appUser;
+    }
+
+    public void setCustomer(Customer appUser) {
+	this.appUser = appUser;
+    }
+
+    public Date getCreatedDate() {
+	return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+	this.createdDate = createdDate;
+    }
+
+    public double getTotalPris() {
+	return totalPris;
+    }
+
+    public void setTotalPris(Double totalPris) {
+	this.totalPris = totalPris;
+    }
+
+    //public List<ProductDelivery> getProductDelivery() {
+//	return productDelivery;
+    //}
+    //
+    //public void setProductDelivery(List<ProductDelivery> productDelivery) {
+//	this.productDelivery = productDelivery;
+    //}
+
+    public boolean isDelivered() {
+	return delivered;
+    }
+
+    public void setDelivered(boolean delivered) {
+	this.delivered = delivered;
+    }
+
+    public void setTotalPris(double totalPris) {
+	this.totalPris = totalPris;
+    }
+
+    public boolean isTook() {
+	return took;
+    }
+
+    public void setTook(boolean took) {
+	this.took = took;
+    }
+
+    public Carrier getCarrier() {
+        return carrier;
+    }
+
+    public void setCarrier(Carrier carrier) {
+        this.carrier = carrier;
+    }
+    
+    
+
+ 
 
 }

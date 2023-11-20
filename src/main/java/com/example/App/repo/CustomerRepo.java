@@ -14,15 +14,15 @@ public interface CustomerRepo extends JpaRepository<Customer, Long> {
 	
 	public Optional<Customer> getCustomerByEmailAndFirstName(String email,String firstname);
 	
-	@Modifying
-	@Query("DELETE Customer c WHERE c.email =?1")
-	void deleteByEmail(String email);
+	//@Modifying
+	//@Query("DELETE Customer c WHERE c.email =?1")
+	//void deleteByEmail(String email);
 	
 	@Modifying
 	@Query("SELECT count(c) = 1 from Customer c where c.email = ?1")
 	public boolean findExistByEmial(String email);
 	
-	Boolean existsByEmail(String eemail);
+	public Optional<Boolean> existsByEmail(String eemail);
 	
 	public Optional<Customer> findByEmail(String email);
 	

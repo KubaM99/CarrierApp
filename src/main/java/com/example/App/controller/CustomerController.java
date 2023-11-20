@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.App.dto.CustomerGetDTO;
 import com.example.App.dto.CustomerPostDTO;
+import com.example.App.model.AppUser;
 import com.example.App.model.Customer;
 import com.example.App.model.Delivery;
 import com.example.App.repo.ProductDeliveryRepo;
+import com.example.App.repo.UserRepo;
 import com.example.App.service.CustomerService;
 import com.example.App.service.DeliveryService;
 import com.example.App.service.ProductDeliveryService;
@@ -41,9 +43,9 @@ public class CustomerController {
 	
 	
 	@GetMapping("/user")
-	public ResponseEntity<Customer> getUserInfo() {
+	public ResponseEntity<AppUser> getUserInfo() {
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    Customer user = (Customer) authentication.getPrincipal();
+	    AppUser user = (AppUser) authentication.getPrincipal();
 	    return ResponseEntity.ok(user);
 	}
 	
@@ -54,57 +56,27 @@ public class CustomerController {
 			
 	}
 	
-	@PostMapping("/addCustomer")
-	public ResponseEntity<CustomerGetDTO> addCustom(@RequestBody @Valid CustomerPostDTO cpDTO ){
-		
-		var customerGetDTO = new CustomerGetDTO();
-		
-		var customer = new Customer(			
-						cpDTO.getFirstName(),					
-						cpDTO.getLastName(),
-						cpDTO.getPhone(),
-						cpDTO.getAddress(),
-						cpDTO.getCity(),
-						cpDTO.getZipCode(),
-						cpDTO.getEmail(),
-						cpDTO.getPassword());
-		
-		
-		customerService.saveCustomer(customer);
-		
-		
-		customerGetDTO.setFirstName(cpDTO.getFirstName());								
-		customerGetDTO.setLastName(cpDTO.getFirstName());
-		customerGetDTO.setPhone(cpDTO.getPhone());
-		customerGetDTO.setAddress(cpDTO.getAddress());
-		customerGetDTO.setCity(cpDTO.getCity());
-		customerGetDTO.setZipCode(cpDTO.getZipCode());
-		customerGetDTO.setEmail(cpDTO.getEmail());
-		
-		
-		
-		return ResponseEntity.ok(customerGetDTO);
-	}
 	
 	
-	@DeleteMapping(value = "/{email}")
-	public ResponseEntity<String> delteleCustomer(@PathVariable("email") String email){
-		
-		
-		var customer = customerService.findByEmail(email);
-		var deliveris  = deliveryService.findDeliveryByCustomerId(customer.get().getId()); 
-		
 	
-		for(Delivery d : deliveris) {
-			productDeliveryService.deleteProductDeliveryByDeliveryId(d.getId());
-		}
-		deliveryService.deleteDeliveryByCustomerId(customer.get().getId());
-		customerService.delteleCustomer(email);
-		
-		return ResponseEntity.ok("ok");
-		
-		
-	}
+	//@DeleteMapping(value = "/{email}")
+	//public ResponseEntity<String> delteleCustomer(@PathVariable("email") String email){
+	//	
+	//	
+	//	var customer = customerService.findByEmail(email);
+	//	var deliveris  = deliveryService.findDeliveryByCustomerId(customer.get().getId()); 
+	//	
+	//
+	//	for(Delivery d : deliveris) {
+	//		productDeliveryService.deleteProductDeliveryByDeliveryId(d.getId());
+	//	}
+	//	deliveryService.deleteDeliveryByCustomerId(customer.get().getId());
+	//	customerService.delteleCustomer(email);
+	//	
+	//	return ResponseEntity.ok("ok");
+	//	
+	//	
+	//}
 	
 	
 	

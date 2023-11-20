@@ -19,9 +19,4 @@ public class ProductService {
 		return productRepo.findAll();
 	}
 	
-	public Optional<Product> findBySku(Long sku) {
-		
-		Product p = productRepo.findBySku(sku);
-		return Optional.ofNullable(p);
-	}
 }   

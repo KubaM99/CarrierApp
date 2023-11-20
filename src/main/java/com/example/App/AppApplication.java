@@ -21,25 +21,16 @@ public class AppApplication {
 		SpringApplication.run(AppApplication.class, args);
 	}
 	
-	//@Bean
-	//CommandLineRunner runAdmin(CustomerRepo customerRepo, PasswordEncoder encoder, RoleRepo roleRepo){
-	//    return args->{
-	//	
-	//	if(roleRepo.findByAuthority("ADMIN").isPresent()) return;
-	//	
-	//	Role adminR = roleRepo.save(new Role("ADMIN"));
-	//	roleRepo.save(new Role("USER"));
-	//	roleRepo.save(new Role("CARRIER"));
-	//	
-	//	Set<Role> roles = new HashSet<>();
-	//	roles.add(adminR);
-	//	
-	//	Customer admin  = new Customer(1L,"admin@admin",encoder.encode("password"),roles);
-	//	
-	//	
-	//	customerRepo.save(admin);
-	//    };
-	//    
-	//}
+	@Bean
+	CommandLineRunner runAdmin(CustomerRepo customerRepo, PasswordEncoder encoder, RoleRepo roleRepo){
+	    return args->{
+		
+		roleRepo.save(new Role("CARRIER"));
+		roleRepo.save(new Role("CUSTOMER"));
+		
+		
+	    };
+	    
+	}
 
 }

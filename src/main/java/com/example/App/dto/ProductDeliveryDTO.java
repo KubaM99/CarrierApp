@@ -9,18 +9,18 @@ import com.example.App.model.Product;
 public class ProductDeliveryDTO {
 
 	private Long sku;
-	private String productName;
+	String productName;
 	private double price;
 	
 
-
-	public ProductDeliveryDTO(Long sku, String productName, double price) {
-		super();
-		this.sku = sku;
-		this.productName = productName;
-		this.price = price;
-	}
 	
+	
+	public ProductDeliveryDTO(Long sku, String productName, double price) {
+	    super();
+	    this.sku = sku;
+	    this.productName = productName;
+	    this.price = price;
+	}
 	public Long getSku() {
 		return sku;
 	}

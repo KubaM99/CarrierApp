@@ -24,8 +24,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
+
+
 @Entity
 //@Table(name = "DeliveryProducts")
 @Table(name = "ProductDeliverys")
@@ -51,19 +51,19 @@ public class ProductDelivery {
 	
 	
 	
-	//@OneToOne(fetch = FetchType.LAZY)
-	//@MapsId
-	//private Product product;
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "product")
+	private Product product;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY )
 	@JoinColumn(name = "delivery_id",referencedColumnName = "id")
 	private Delivery delivery;
     
-	public ProductDelivery(int quantity, double price, Product product, Delivery delivery) {
+	public ProductDelivery(int quantity, double price, Product product) {
 		super();
 		this.quantity = quantity;
 		this.price = price;
-		this.delivery = delivery;
+		
 		
 	}
 	
@@ -79,6 +79,15 @@ public class ProductDelivery {
 		this.price=price;
 		this.quantity = quantity;
 		this.delivery = delivery;
+	}
+	
+	public ProductDelivery(Long sku, String productName, double price, Integer quantity) {
+		super();
+		this.sku=sku;
+		this.productName=productName;
+		this.price=price;
+		this.quantity = quantity;
+		
 	}
 	
 	
