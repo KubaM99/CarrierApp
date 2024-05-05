@@ -28,8 +28,8 @@ public class Card {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductDelivery> productDelivery;
+    //@OneToMany(cascade = CascadeType.ALL)
+    //private List<ProductDeliveris> productDelivery;
 
     private Long sku;
     private String productName;
@@ -42,6 +42,15 @@ public class Card {
 	this.productName = productName;
 	this.price = price;
     }
+    
+    public Card(Long id, Customer customer, Long sku, String productName, double price) {
+  	super();
+  	this.id = id;
+  	this.customer = customer;
+  	this.sku = sku;
+  	this.productName = productName;
+  	this.price = price;
+      }
 
     public Card() {
 	super();

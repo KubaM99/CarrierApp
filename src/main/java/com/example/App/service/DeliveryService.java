@@ -1,6 +1,7 @@
 package com.example.App.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collector;
@@ -11,16 +12,17 @@ import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import com.example.App.dto.CustomerForCarrierDTO;
+import com.example.App.dto.DeliveryForCarrierDTO;
 import com.example.App.dto.DeliveryResponseDTO;
-import com.example.App.dto.dalivery.CustomerForCarrierDTO;
-import com.example.App.dto.dalivery.DeliveryForCarrierDTO;
+import com.example.App.exceptation.NotFoundProducts;
 import com.example.App.maper.DeliveryMaper;
 import com.example.App.model.AppUser;
 import com.example.App.model.Card;
 import com.example.App.model.Carrier;
 import com.example.App.model.Customer;
 import com.example.App.model.Delivery;
-import com.example.App.model.ProductDelivery;
+import com.example.App.model.ProductDeliveris;
 import com.example.App.model.Product;
 import com.example.App.repo.CardRepo;
 import com.example.App.repo.CustomerRepo;
@@ -48,8 +50,7 @@ public class DeliveryService {
     private ProductRepo productService;
     @Autowired
     private ProductDeliveryService productDeliveryService;
-    @Autowired
-    private UserRepo userRepo;
+ 
     
     
     
@@ -58,67 +59,38 @@ public class DeliveryService {
 	return deliveryRepo.save(delivery);
     }
     
-    public double getTotalPrise(List<ProductDelivery> dp) {
-
-	double totalprise = 0;
-
-	for (ProductDelivery product : dp) {
-
-	    totalprise += product.getPrice();
-	}
-
-	return totalprise;
-    }
-
-    //public void deleteDeliveryByCustomerId(Long id) {
-//	deliveryRepo.deleteDeliveryByCustomerId(id);
-    //
-    //}
-
-    //public List<Delivery> findDeliveryByCustomerId(Long id) {
-    //
-//	List<Delivery> deliveries = deliveryRepo.findAllDeliveryByCustomerId(id);
-    //
-//	// return deliveryRepo.findAllById(delivery.stream().map(Delivery ::
-//	// getId).collect(Collectors.toList()));
-//	return deliveries;
-    //}
-
-    public Optional<Delivery> findById(Long id) {
-
-	Optional<Delivery> dleivery = deliveryRepo.findById(id);
-
-	return Optional.ofNullable(dleivery.get());
-
-    }
+    
 
    public DeliveryResponseDTO addDelivery() {
 
-	//var  customer = userRepo.findByEmail(authentService.findUser()).orElseThrow();
 	var  customer = customerRepo.findByEmail(authentService.findUser()).orElseThrow();
-
+	
 	List<Card> productsCard = cardRepo.findByCustomerId(customer.getId()).orElseThrow();
 
-	List<ProductDelivery> dp = new ArrayList<>();
+	if(productsCard.isEmpty()) {
+	    
+	    throw new NotFoundProducts("Card is empty");
+	}
+	
+	List<ProductDeliveris> dp = new ArrayList<>();
 
 	for(Card p : productsCard ) {
 	    
 	    Product product = productService.findBySku(p.getSku()).orElseThrow();
 	        
-		
 		Long sku = product.getSku();
 		String productName = product.getName();
 		double price = product.getPrice();
 			
    
-		dp.add(new ProductDelivery(sku, productName, price, 1));
+		dp.add(new ProductDeliveris(sku, productName, price, 1));
 	    
 	}
 
-	Delivery delivery = saveDelivery(new Delivery(customer));
+	Delivery delivery = deliveryRepo.save(new Delivery(customer));
         
         
-	List<ProductDelivery> pList = productDeliveryService.getProduct(dp, delivery);
+	List<ProductDeliveris> pList = productDeliveryService.getProduct(dp, delivery);
 	productDeliveryService.saveAll(pList);
         
 	cardRepo.deleteByCustomerId(customer.getId());
@@ -136,7 +108,7 @@ public class DeliveryService {
     
     public List<DeliveryForCarrierDTO> deliverisForCarriers(){
 	
-	List<Delivery> deliveris = deliveryRepo.findAllDeliveryForCarriers();
+	List<Delivery> deliveris = deliveryRepo.findAllDeliveriesForCarriers().orElseThrow();
 	
 	List<DeliveryForCarrierDTO> dtoList  = new ArrayList<>();
 	
@@ -171,4 +143,31 @@ public class DeliveryService {
 	return dtoList;
 	
     }
+    
+    public List<DeliveryResponseDTO> customerDeliveries(){
+	
+	var  customer = customerRepo.findByEmail(authentService.findUser()).orElseThrow();
+	
+	List<DeliveryResponseDTO> dto = new ArrayList<DeliveryResponseDTO>();
+	
+	
+	List<Delivery> deliveries = deliveryRepo.findAllDeliveryByCustomerId(customer.getId()).orElseThrow();
+	
+	for(Delivery delivery : deliveries) {
+	    
+	    var products = productDeliveryService.getProduct(delivery);
+	    
+	    dto.add(new DeliveryResponseDTO(delivery.getId(),
+		    delivery.getTotalPris(),
+		    new Date(),
+		    delivery.isTook(),
+		    delivery.isDelivered(),
+		    products));
+	    
+	}
+	
+	return dto;
+	
+    }
+    
 }

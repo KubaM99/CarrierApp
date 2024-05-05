@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.App.model.ProductDelivery;
+import com.example.App.model.ProductDeliveris;
 import com.example.App.model.Product;
 
 public interface ProductRepo extends JpaRepository<Product, Long> {

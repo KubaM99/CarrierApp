@@ -37,11 +37,11 @@ public class Product {
 		this.sku = sku;
 	}
 	
-	public Product(Long id,  String name, int price, Long sku) {
-		this.id = id;
+	public Product(String name,Long sku, int price) {
 		this.name = name;
-		this.price = price;
 		this.sku = sku;
+		this.price = price;
+		
 	}
 	
 	public Product(Long id,  String name, int price) {

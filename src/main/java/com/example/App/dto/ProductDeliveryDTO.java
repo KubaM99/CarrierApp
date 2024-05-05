@@ -5,6 +5,10 @@ import java.util.Optional;
 
 import com.example.App.model.Product;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
 
 public class ProductDeliveryDTO {
 

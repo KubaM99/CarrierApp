@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.App.dto.AddProdacutToCardDTO;
+import com.example.App.dto.ProductDeliveryDTO;
 import com.example.App.model.Customer;
 import com.example.App.model.Delivery;
-import com.example.App.model.ProductDelivery;
+import com.example.App.model.ProductDeliveris;
 import com.example.App.model.Product;
 import com.example.App.repo.DeliveryRepo;
 import com.example.App.repo.ProductDeliveryRepo;
@@ -29,19 +30,19 @@ public class ProductDeliveryService {
 	@Autowired
 	private ProductRepo productRepo;
 
-	public List<ProductDelivery> getAllDeliveryProducts() {
+	public List<ProductDeliveris> getAllDeliveryProducts() {
 		return productDeliveryRepo.findAll();
 	}
 
-	public List<ProductDelivery> saveAll(List<ProductDelivery> dp) {
+	public List<ProductDeliveris> saveAll(List<ProductDeliveris> dp) {
 		return productDeliveryRepo.saveAll(dp);
 	}
 
-	public List<ProductDelivery> getProduct(List<ProductDelivery> dleiveruProductList, Delivery dleivery) {
+	public List<ProductDeliveris> getProduct(List<ProductDeliveris> dleiveruProductList, Delivery dleivery) {
         
-		List<ProductDelivery> dp = new ArrayList<>();
+		List<ProductDeliveris> dp = new ArrayList<>();
         
-		for (ProductDelivery x : dleiveruProductList) {
+		for (ProductDeliveris x : dleiveruProductList) {
         
 			Optional<Product> product = productRepo.findBySku(x.getSku());
         
@@ -51,7 +52,7 @@ public class ProductDeliveryService {
 				double price = product.get().getPrice();
 				
         
-				dp.add(new ProductDelivery(sku, productName, price, 1, dleivery));
+				dp.add(new ProductDeliveris(sku, productName, price, 1, dleivery));
 			}
 			
 			dleivery.setTotalPris(getTotalprice(dp));
@@ -61,10 +62,10 @@ public class ProductDeliveryService {
         
 	}
 	
-	public double getTotalprice(List<ProductDelivery> dp) {
+	public double getTotalprice(List<ProductDeliveris> dp) {
 		
 		double sum = 0;
-		for(ProductDelivery x : dp) {
+		for(ProductDeliveris x : dp) {
 			
 			sum += x.getPrice();
 		}
@@ -77,9 +78,9 @@ public class ProductDeliveryService {
 	//}
 	
 	
-	public List<ProductDelivery> addProductToCart(AddProdacutToCardDTO productName) {
+	public List<ProductDeliveris> addProductToCart(AddProdacutToCardDTO productName) {
 
-		List<ProductDelivery> dp = new ArrayList<>();
+		List<ProductDeliveris> dp = new ArrayList<>();
 
 		
 
@@ -93,7 +94,7 @@ public class ProductDeliveryService {
 				double price = product.getPrice();
 				
 
-				dp.add(new ProductDelivery(sku, name, price, 1));
+				dp.add(new ProductDeliveris(sku, name, price, 1));
 			//}
 			
 			//dleivery.setTotalPris(getTotalprice(dp));
@@ -102,6 +103,32 @@ public class ProductDeliveryService {
 		
 		return dp;
 
+	}
+	
+	public List<ProductDeliveryDTO> getProduct(Delivery dleivery) {
+	        
+	    List<ProductDeliveris> deliveries = productDeliveryRepo.
+		    		findProductDeliveryByDeliveryId(dleivery.getId()).orElseThrow();
+	    
+	    List<ProductDeliveryDTO> dp = new ArrayList<>();
+    
+		for (ProductDeliveris x : deliveries) {
+    
+			Optional<Product> product = productRepo.findBySku(x.getSku());
+    
+			if (product.isPresent()) {
+				Long sku = product.get().getSku();
+				String productName = product.get().getName();
+				double price = product.get().getPrice();
+				
+    
+				dp.add(new ProductDeliveryDTO(sku, productName, price));
+			}
+			
+    
+		}
+		return dp;
+    
 	}
 	
 	

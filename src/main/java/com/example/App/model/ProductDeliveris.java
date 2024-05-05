@@ -29,7 +29,7 @@ import lombok.NoArgsConstructor;
 @Entity
 //@Table(name = "DeliveryProducts")
 @Table(name = "ProductDeliverys")
-public class ProductDelivery {
+public class ProductDeliveris {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,7 +59,7 @@ public class ProductDelivery {
 	@JoinColumn(name = "delivery_id",referencedColumnName = "id")
 	private Delivery delivery;
     
-	public ProductDelivery(int quantity, double price, Product product) {
+	public ProductDeliveris(int quantity, double price, Product product) {
 		super();
 		this.quantity = quantity;
 		this.price = price;
@@ -72,7 +72,7 @@ public class ProductDelivery {
 
 
 
-	public ProductDelivery(Long sku, String productName, double price, Integer quantity, Delivery delivery) {
+	public ProductDeliveris(Long sku, String productName, double price, Integer quantity, Delivery delivery) {
 		super();
 		this.sku=sku;
 		this.productName=productName;
@@ -81,7 +81,7 @@ public class ProductDelivery {
 		this.delivery = delivery;
 	}
 	
-	public ProductDelivery(Long sku, String productName, double price, Integer quantity) {
+	public ProductDeliveris(Long sku, String productName, double price, Integer quantity) {
 		super();
 		this.sku=sku;
 		this.productName=productName;
@@ -96,7 +96,7 @@ public class ProductDelivery {
 
 
 
-	public ProductDelivery() {
+	public ProductDeliveris() {
 		super();
 	}
 

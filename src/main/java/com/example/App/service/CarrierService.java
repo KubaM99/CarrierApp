@@ -6,13 +6,15 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import com.example.App.dto.ProducstToPickUpByCarreir;
+import com.example.App.exceptation.NotFoundDelivery;
 import com.example.App.maper.DeliveryMaper;
 import com.example.App.model.Carrier;
 import com.example.App.model.Delivery;
-import com.example.App.model.ProductDelivery;
+import com.example.App.model.ProductDeliveris;
 import com.example.App.repo.CarrierRepo;
 import com.example.App.repo.DeliveryRepo;
 import com.example.App.repo.ProductDeliveryRepo;
@@ -62,27 +64,28 @@ public class CarrierService {
 	}
 	
 	public String bookingDelivery(Long id) {
-		//()-> new RuntimeException("Delivery not exsist")
-	    Delivery delivery = deliveryRepo.findDeliveryForCarrier(id).orElseThrow();
 	    
-	    Carrier carrier = carrierRepo.findByEmail(authentService.findUser()).orElseThrow();
+	    Delivery delivery = deliveryRepo.findDeliveryForCarrier(id)
+		    .orElseThrow(()-> new NotFoundDelivery("Delivery not found"));
 	    
-	    //carrierDeliveryRepo.save(new CarrierDelivery(carrier,delivery));
+	    Carrier carrier = carrierRepo.findByEmail(authentService.findUser())
+		    .orElseThrow(()-> new UsernameNotFoundException("User dont exsist"));
+	    
 	    
 	    delivery.setTook(true);
 	    delivery.setCarrier(carrier);;
 
-	    return "Delivery has been booked at id: "+ delivery.getId();
-		
-		
+	    return "Delivery was booked at id: "+ delivery.getId();
+			
 		
 	}
 	
 	public Long delivered(Long id) {
 	    
-	    Carrier carrier = carrierRepo.findByEmail(authentService.findUser()).orElseThrow();
+	    //Carrier carrier = carrierRepo.findByEmail(authentService.findUser()).orElseThrow();
 	    
-	    Delivery delivery = deliveryRepo.findById(id).orElseThrow();
+	    Delivery delivery = deliveryRepo.findById(id)
+		    .orElseThrow(()-> new NotFoundDelivery("Delivery not found"));
 	    
 	    delivery.setDelivered(true);
 	    
@@ -90,11 +93,12 @@ public class CarrierService {
 	    
 	}
 	
-	public List<ProducstToPickUpByCarreir> yyy() {
+	public List<ProducstToPickUpByCarreir> listOfProdustsForCarreir() {
 	    
 	    Carrier carrier = carrierRepo.findByEmail(authentService.findUser()).orElseThrow();
 	    
-	    List<Delivery>  deliveries = deliveryRepo.findAllDeliveryByCarrierId(carrier.getId()).orElseThrow();
+	    List<Delivery>  deliveries = deliveryRepo.findAllDeliveryByCarrierId(carrier.getId())
+		    .orElseThrow(()-> new NotFoundDelivery("Delivery not found"));
 	    
 	    List<ProducstToPickUpByCarreir> productToPickUp = new ArrayList<ProducstToPickUpByCarreir>();
 	    
@@ -105,7 +109,9 @@ public class CarrierService {
 		p.setOrderId(d.getId());
 		
 		
-		List<ProductDelivery> items = productDeliveryRepo.findProductDeliveryByDeliveryId(d.getId()).get();
+		List<ProductDeliveris> items = productDeliveryRepo.
+			findProductDeliveryByDeliveryId(d.getId()).get();
+		
 		p.setProductDeliveryDTOs(DeliveryMaper.toDTO(items));
 		
 		productToPickUp.add(p);

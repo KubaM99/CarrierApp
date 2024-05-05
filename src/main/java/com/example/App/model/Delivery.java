@@ -1,13 +1,13 @@
 package com.example.App.model;
 
-import java.io.Serializable;
+
 import java.util.Date;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SourceType;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -22,12 +22,12 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "delivery")
-public class Delivery implements Serializable {
+@AllArgsConstructor
+public class Delivery  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +35,7 @@ public class Delivery implements Serializable {
 
     
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "appUser")
+    @JoinColumn(name = "customerId")
     private Customer appUser;
     
     
@@ -51,7 +51,7 @@ public class Delivery implements Serializable {
 
   
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true, fetch =FetchType.LAZY)
-    private List<ProductDelivery> productDelivery;
+    private List<ProductDeliveris> productDelivery;
 
     public Delivery(Customer appUser) {
 	super();
@@ -60,8 +60,17 @@ public class Delivery implements Serializable {
 	this.took = false;
 
     }
+    
+    public Delivery(Long id) {
+   	super();
+   	this.id =id;
+   	this.delivered = false;
+   	this.took = false;
 
-    public Delivery(Customer appUser, Date createdDate, double totalPris, List<ProductDelivery> productDelivery) {
+       }
+    
+
+    public Delivery(Customer appUser, Date createdDate, double totalPris, List<ProductDeliveris> productDelivery) {
 	super();
 	this.appUser = appUser;
 	//this.productDelivery = productDelivery;

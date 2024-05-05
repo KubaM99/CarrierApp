@@ -8,18 +8,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.App.dto.AddProdacutToCardDTO;
+import com.example.App.dto.ProductDeliveryDTO;
+import com.example.App.exceptation.NotFoundProducts;
 import com.example.App.model.AppUser;
 import com.example.App.model.Card;
 import com.example.App.model.Customer;
 import com.example.App.model.Product;
-import com.example.App.model.ProductDelivery;
+import com.example.App.model.ProductDeliveris;
 import com.example.App.repo.CardRepo;
 import com.example.App.repo.CustomerRepo;
 import com.example.App.repo.ProductRepo;
 import com.example.App.repo.UserRepo;
 import com.example.App.security.AuthentService;
 
+import jakarta.transaction.Transactional;
+
 @Component
+@Transactional
 public class CardService {
     
     @Autowired
@@ -30,43 +35,49 @@ public class CardService {
     private AuthentService authentService;
     @Autowired
     private CustomerRepo customerRepo;
-    @Autowired
-    private UserRepo user;
+  
     
     
     
-    public List<ProductDelivery> addProductsToCard(List<AddProdacutToCardDTO> skus){
+    public void addProductsToCard(Long sku){
 	
 	var  customer = customerRepo.findByEmail(authentService.findUser()).orElseThrow();
 	
-	List<ProductDelivery> dp = new ArrayList<>();
 	
+		Product product = productRepo.findBySku(sku)
+			.orElseThrow(() ->new NotFoundProducts("Product not found"));
+        
 	
-        
-	for (AddProdacutToCardDTO x : skus) {
-        
-		Product product = productRepo.findBySku(x.getSku()).orElseThrow();
-        
+	    cardRepo.save(new Card(customer,product.getSku(),product.getName(),product.getPrice()));
+    }
+    
+    
+    public void deleteCartItem(Long sku){
+	
+	var  customer = customerRepo.findByEmail(authentService.findUser()).orElseThrow();
+	var item = cardRepo.findOneCardItem(customer.getId(),sku)
+		.orElseThrow(()-> new NotFoundProducts("Product not found"));
 		
-		Long sku = product.getSku();
-		String productName = product.getName();
-		double price = product.getPrice();
-			
-        
-		dp.add(new ProductDelivery(sku, productName, price, 1));
-		
-	}
 	
-	
-	for(ProductDelivery product : dp) {
-	    cardRepo.save(new Card(customer,product.getSku(),product.getProductName(),product.getPrice()));
-	}
-	
-	
-	return dp;
-	
+	cardRepo.deleteCartItem(item.getId().longValue());
 	
     }
+    
+    public List<ProductDeliveryDTO> cardItemsForCustomer(){
+	
+	var  customer = customerRepo.findByEmail(authentService.findUser()).orElseThrow();
+	var items = cardRepo.findByCustomerId(customer.getId()).orElseThrow(() ->new NotFoundProducts("Product not found"));
+	
+	List<ProductDeliveryDTO> c = new ArrayList<ProductDeliveryDTO>();
+	
+	for(Card i : items) {
+	    
+	    c.add(new ProductDeliveryDTO(i.getSku(),i.getProductName() ,i.getPrice()));
+	}
+	
+	return c;
+    }
+    
 
 }
  

@@ -56,7 +56,7 @@ public class AppUser implements UserDetails {
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "role_join_user", 
-			joinColumns = {@JoinColumn(name = "id") },
+			joinColumns = {@JoinColumn(name = "user_id") },
 			inverseJoinColumns = {@JoinColumn(name = "role_id") })
 	private Set<Role> rols;
 	

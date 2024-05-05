@@ -1,4 +1,4 @@
-package com.example.App.dto.dalivery;
+package com.example.App.dto;
 
 import jakarta.persistence.Column;
 

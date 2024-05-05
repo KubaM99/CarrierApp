@@ -1,19 +1,33 @@
 package com.example.App.security;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.security.core.userdetails.User;
 
 import com.example.App.dto.CustomerPostDTO;
+import com.example.App.dto.CustomerUpdateDTO;
 import com.example.App.dto.LoginDTO;
 import com.example.App.exceptation.CustomerExsistExceptation;
+import com.example.App.exceptation.ExceptatopnObject;
+import com.example.App.exceptation.InvalidPasswordExceptation;
 import com.example.App.exceptation.UserNotFoundExceptaion;
 import com.example.App.model.AppUser;
 import com.example.App.model.Carrier;
@@ -40,7 +54,7 @@ public class AuthentService {
     private CarrierRepo carrierRepo;
 
     @Autowired
-    private PasswordEncoder encoder;
+    private BCryptPasswordEncoder encoder;
 
     @Autowired
     private RoleRepo roleRepo;
@@ -136,20 +150,28 @@ public class AuthentService {
 
     }
 
-    public String loginUser(LoginDTO loginDTO) {
-
+    public String loginUser(LoginDTO loginDTO) throws Exception {
+	
+	
 	var user = userRepo.findByEmail(loginDTO.getEmail())
 		.orElseThrow(() -> new UserNotFoundExceptaion("User doesnt exsist"));
-
-	authenticationManager
-		.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
-
+	
+	if(!encoder.matches(loginDTO.getPassword(), user.getPassword())) {
+	    throw new InvalidPasswordExceptation("Invalid password/login");
+	}
+	
+	 authenticationManager
+    		.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(),
+    						loginDTO.getPassword()));
+	
+	
 	var jwtToken = jwtService.generateToken(user);
 	revokeAllTokens(user);
 	saveAppUserToken(user,jwtToken);
 
 	return jwtToken;
-
+	   
+	
     }
 
     public String findUser() {
@@ -162,14 +184,7 @@ public class AuthentService {
     
     
     private void saveAppUserToken(AppUser appUser, String jwtToken) {
-	//var token = Token.builder()
-	//	.appUser(appUser)
-	//	.token(jwtToken)
-	//	.tokenType(TokenType.BEARER)
-	//	.revoked(false)
-	//	.expired(false)
-	//	.build();
-	//
+	
 	var token = new Token();
 	
 	token.setAppUser(appUser);
@@ -187,9 +202,6 @@ public class AuthentService {
 
 	var tokens = tokenRepo.findAllValidTokensByUser(appUser.getId());
 
-	// if(tokens.isEmpty()) return;
-
-	System.out.println(tokens);
 
 	tokens.forEach(t -> {
 	    t.setRevoked(true);
@@ -199,5 +211,42 @@ public class AuthentService {
 	tokenRepo.saveAll(tokens);
     }
     
+    public void updateUser(CustomerUpdateDTO appuser) {
+	
+	
+	var user= userRepo.findByEmail(findUser())
+		.orElseThrow(() -> new UserNotFoundExceptaion("User doesnt exsist"));
+	var castomer = customerRepo.findByEmail(findUser())
+		.orElseThrow(() -> new UserNotFoundExceptaion("User doesnt exsist"));
+	var carrier= carrierRepo.findByEmail(findUser());
 
+	user.setFirstName(appuser.getFirstName());
+	user.setLastName(appuser.getLastName());
+	user.setPhone(appuser.getPhone());
+	user.setAddress(appuser.getAddress());
+	user.setCity(appuser.getCity());
+	user.setZipCode(appuser.getZipCode());
+
+	castomer.setFirstName(appuser.getFirstName());
+	castomer.setLastName(appuser.getLastName());
+	castomer.setPhone(appuser.getPhone());
+	castomer.setAddress(appuser.getAddress());
+	castomer.setCity(appuser.getCity());
+	castomer.setZipCode(appuser.getZipCode());
+
+	if(carrier.isPresent()) {
+	    	carrier.get().setFirstName(appuser.getFirstName());
+	    	carrier.get().setLastName(appuser.getLastName());
+	    	carrier.get().setPhone(appuser.getPhone());
+	    	carrier.get().setAddress(appuser.getAddress());
+	    	carrier.get().setCity(appuser.getCity());
+	    	carrier.get().setZipCode(appuser.getZipCode());
+	    	carrierRepo.save(carrier.get());
+	}
+	
+	userRepo.save(user);
+	customerRepo.save(castomer);
+	
+    
+    }
 }

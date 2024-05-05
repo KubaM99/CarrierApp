@@ -44,6 +44,53 @@ public class GlobalExceptation {
 	
     }
     
+    @ExceptionHandler(InvalidPasswordExceptation.class)
+    public ResponseEntity<ExceptatopnObject> handlerInvalidPasswordExceptaion(InvalidPasswordExceptation ex, WebRequest request){
+	
+	ExceptatopnObject exceptatopnObject = new ExceptatopnObject();
+	
+	exceptatopnObject.setCode(HttpStatus.UNAUTHORIZED.value());
+	exceptatopnObject.setMassage(ex.getMessage());
+	exceptatopnObject.setTime(new Date());
+	
+	
+	
+	return new ResponseEntity<ExceptatopnObject>(exceptatopnObject, HttpStatus.BAD_REQUEST);
+	
+    }
+    
+    @ExceptionHandler(NotFoundProducts.class)
+    public ResponseEntity<ExceptatopnObject> handlerINotFoundProductsExceptaion(NotFoundProducts ex, WebRequest request){
+	
+	ExceptatopnObject exceptatopnObject = new ExceptatopnObject();
+	
+	exceptatopnObject.setCode(HttpStatus.NOT_FOUND.value());
+	exceptatopnObject.setMassage(ex.getMessage());
+	exceptatopnObject.setTime(new Date());
+	
+	
+	
+	return new ResponseEntity<ExceptatopnObject>(exceptatopnObject, HttpStatus.NOT_FOUND);
+	
+    }
+   
+    
+    @ExceptionHandler(NotFoundDelivery.class)
+    public ResponseEntity<ExceptatopnObject> handlerINotFoundDeliveryExceptaion(NotFoundDelivery ex, WebRequest request){
+	
+	ExceptatopnObject exceptatopnObject = new ExceptatopnObject();
+	
+	exceptatopnObject.setCode(HttpStatus.NOT_FOUND.value());
+	exceptatopnObject.setMassage(ex.getMessage());
+	exceptatopnObject.setTime(new Date());
+	
+	
+	
+	return new ResponseEntity<ExceptatopnObject>(exceptatopnObject, HttpStatus.NOT_FOUND);
+	
+    }
+
+    
 
 
 }

@@ -4,14 +4,14 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.example.App.model.ProductDelivery;
+import com.example.App.model.ProductDeliveris;
 
 
 public class OrderDTO {
 
 	private String customerEmail;
 	private String customerName;
-	private List<ProductDelivery> productDeliveris;
+	private List<ProductDeliveris> productDeliveris;
 	
 
 	public String getCustomerEmail() {
@@ -25,13 +25,13 @@ public class OrderDTO {
 	}
 
 
-	public List<ProductDelivery> getProductDeliveris() {
+	public List<ProductDeliveris> getProductDeliveris() {
 		return productDeliveris;
 	}
 	
 	
                                                                              
-	public void setProductDeliveris(List<ProductDelivery> deliveryProducts) { 
+	public void setProductDeliveris(List<ProductDeliveris> deliveryProducts) { 
 		this.productDeliveris = deliveryProducts;                                
 	}                                                                        
                                                                              

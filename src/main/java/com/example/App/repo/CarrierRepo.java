@@ -14,7 +14,8 @@ public interface CarrierRepo  extends JpaRepository<Carrier, Long> {
 	
 	Optional<Carrier> findByEmail(String email);
 	
-	Boolean existsByEmail(String eemail);
+	//
+	//Boolean existsByEmail(String email);
 
 	
 	

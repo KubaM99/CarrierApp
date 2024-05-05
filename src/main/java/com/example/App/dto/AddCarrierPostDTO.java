@@ -1,5 +1,7 @@
 package com.example.App.dto;
 
+import org.hibernate.validator.constraints.Length;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -26,9 +28,11 @@ public class AddCarrierPostDTO {
 	@NotBlank(message = "Post code is mandatory")
 	private String zipCode;
 	
-	@Email(message = "Email is mandatory")
+	@Email(message = "Email is mandatory or not valid")
 	private String email;
 	
+	@NotBlank(message = "Password is mandatory")
+	@Length(min = 5, message = "Password is too short")
 	private String password;
 	
 	

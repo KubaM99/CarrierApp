@@ -22,7 +22,8 @@ public class AppApplication {
 	}
 	
 	@Bean
-	CommandLineRunner runAdmin(CustomerRepo customerRepo, PasswordEncoder encoder, RoleRepo roleRepo){
+	CommandLineRunner runUser(CustomerRepo customerRepo,
+				RoleRepo roleRepo){
 	    return args->{
 		
 		roleRepo.save(new Role("CARRIER"));

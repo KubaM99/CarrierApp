@@ -78,12 +78,20 @@ public class Carrier {
         	this.appuser = appuser;
 
 		}
-
 	
 
 	public Carrier() {
 	    super();
 	}
+
+    
+        public Carrier(String firstName, String email) {
+            super();
+            this.firstName = firstName;
+            this.email = email;
+        }
+
+
 
 
 

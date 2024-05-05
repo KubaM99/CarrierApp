@@ -25,7 +25,7 @@ import jakarta.validation.constraints.NotNull;
 @Component
 public class JwtAuthConfigurate extends OncePerRequestFilter{
     
-    @Autowired
+    @Autowired(required = true)
     private JwtService jwtService;
     
     @Autowired
@@ -56,7 +56,7 @@ public class JwtAuthConfigurate extends OncePerRequestFilter{
 	   UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
 	   
 	   var isTokenValid = tokenRepo.findByToken(jwtToken)
-		   .map(t -> !t.isExpired() && !t.isExpired())
+		   .map(t -> !t.isExpired()&& !t.isExpired())
 		   .orElse(false);
 	   
 	   if(jwtService.checkToken(jwtToken, userDetails) && isTokenValid) {

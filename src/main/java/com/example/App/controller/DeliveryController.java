@@ -1,11 +1,13 @@
 package com.example.App.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.hibernate.bytecode.internal.bytebuddy.PrivateAccessorException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,14 +16,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.App.dto.AddProdacutToCardDTO;
+import com.example.App.dto.AppMessage;
+import com.example.App.dto.DeliveryForCarrierDTO;
 import com.example.App.dto.DeliveryResponseDTO;
 import com.example.App.dto.OrderDTO;
 import com.example.App.dto.ProductDeliveryDTO;
-import com.example.App.dto.dalivery.DeliveryForCarrierDTO;
 import com.example.App.maper.DeliveryMaper;
 import com.example.App.model.Customer;
 import com.example.App.model.Delivery;
-import com.example.App.model.ProductDelivery;
+import com.example.App.model.ProductDeliveris;
 import com.example.App.model.Product;
 import com.example.App.repo.CustomerRepo;
 import com.example.App.repo.DeliveryRepo;
@@ -40,10 +43,7 @@ public class DeliveryController {
 	private DeliveryRepo deliveryRepo;
 	@Autowired
 	private CustomerService customerService;
-	@Autowired
-	private ProductService productService;
-	@Autowired
-	private ProductDeliveryService productDeliveryService;
+	
 	
 	
 	
@@ -103,26 +103,37 @@ public class DeliveryController {
 
 	}
 	
-	@PostMapping("/addProductToCard")
-	public ResponseEntity<List<ProductDelivery>> pleaseDelivery(@RequestBody AddProdacutToCardDTO dto) {
-	    
+	//@PostMapping("/addProductToCard")
+	//public ResponseEntity<List<ProductDeliveris>> pleaseDelivery(@RequestBody AddProdacutToCardDTO dto) {
+	//    
 	  
 	    
-	    return ResponseEntity.ok(productDeliveryService.addProductToCart(dto));
-	    
+	//    return ResponseEntity.ok(productDeliveryService.addProductToCart(dto));
+	//   
 	   
+	//}
+	
+	@GetMapping("/createDelivery")
+	public ResponseEntity<AppMessage> addDelivery() {
+	    deliveryService.addDelivery();
+	    //return ResponseEntity.ok(deliveryService.addDelivery());
+	    return new ResponseEntity<AppMessage>(new AppMessage("Delivery created.",
+		     new Date()),
+			HttpStatus.CREATED);
 	}
 	
-	@GetMapping("/addDelivery")
-	public ResponseEntity<DeliveryResponseDTO> addDeliver() {
-	    
-	    return ResponseEntity.ok(deliveryService.addDelivery());
-	}
-	
-	@GetMapping("/forCarriers")
+	@GetMapping("/forCarrier")
 	public ResponseEntity<List<DeliveryForCarrierDTO>> deliveryForCarriers() {
 	    
 	    List<DeliveryForCarrierDTO> deliveris =  deliveryService.deliverisForCarriers();
+	    
+	    return ResponseEntity.ok(deliveris);
+	}
+	
+	@GetMapping("/forCustomer")
+	public ResponseEntity<List<DeliveryResponseDTO>> deliveryForCustomer() {
+	    
+	    List<DeliveryResponseDTO> deliveris =  deliveryService.customerDeliveries();
 	    
 	    return ResponseEntity.ok(deliveris);
 	}

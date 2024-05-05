@@ -1,9 +1,8 @@
-package com.example.App.dto.dalivery;
+package com.example.App.dto;
 
 import java.util.Date;
 import java.util.List;
 
-import com.example.App.dto.ProductDeliveryDTO;
 import com.example.App.model.AppUser;
 import com.example.App.model.Delivery;
 

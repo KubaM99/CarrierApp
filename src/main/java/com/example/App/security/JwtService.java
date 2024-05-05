@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,6 +33,7 @@ public class JwtService {
 	return generateToken(new HashMap<>(),userDetails);
     }
     
+   
     public String generateToken(Map<String,Object> claims, UserDetails userDetails) {
 	
 	return Jwts.builder()

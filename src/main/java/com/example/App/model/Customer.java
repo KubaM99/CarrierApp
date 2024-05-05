@@ -77,6 +77,12 @@ public class Customer  {
 		this.firstName = firstName;
 		this.email = email;
 	}
+	public Customer(Long id,String firstName, String email) {
+		super();
+		this.id = id;
+		this.firstName = firstName;
+		this.email = email;
+	}
 
 	public String getFirstName() {
 		return firstName;

@@ -5,8 +5,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,7 +21,7 @@ import com.example.App.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
-public class UserAppConfig {
+public class UserAppConfig  {
     
     @Autowired
     private UserRepo userRepo;
@@ -28,11 +30,11 @@ public class UserAppConfig {
     @Bean
     public UserDetailsService userDetailsServiceCustomer() {
       return username -> userRepo.findByEmail(username)
-          .orElseThrow(() -> new UsernameNotFoundException("Customer not found"));
+          .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
     
     @Bean
-    public AuthenticationProvider authenticationProviderCustomer() {
+    public AuthenticationProvider authenticationProviderUser() {
       DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
       authProvider.setUserDetailsService(userDetailsServiceCustomer());
       authProvider.setPasswordEncoder(passwordEncoder());
@@ -41,9 +43,9 @@ public class UserAppConfig {
     
     
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder  passwordEncoder() {
 	return new BCryptPasswordEncoder();
-    }
+   }
     
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
@@ -51,4 +53,5 @@ public class UserAppConfig {
 	return authenticationConfiguration.getAuthenticationManager();
     }
 
+   
 }

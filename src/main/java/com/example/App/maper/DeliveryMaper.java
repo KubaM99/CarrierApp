@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.App.dto.ProductDeliveryDTO;
 import com.example.App.model.Delivery;
-import com.example.App.model.ProductDelivery;
+import com.example.App.model.ProductDeliveris;
 import com.example.App.model.Product;
 import com.example.App.repo.CustomerRepo;
 import com.example.App.repo.ProductRepo;
@@ -21,15 +21,15 @@ import com.example.App.service.ProductService;
 
 import lombok.experimental.var;
 
-@Component
+//@Component
 public class DeliveryMaper {
 
 	// nie dział optional, 500 Internal Server Error
-	public static List<ProductDeliveryDTO> toDTO(List<ProductDelivery> productDelivery) {
+	public static List<ProductDeliveryDTO> toDTO(List<ProductDeliveris> productDelivery) {
 
 		List<ProductDeliveryDTO> dto = new ArrayList<>();
 
-		for (ProductDelivery x : productDelivery) {
+		for (ProductDeliveris x : productDelivery) {
 
 			dto.add(new ProductDeliveryDTO(x.getSku(), x.getProductName(), x.getPrice()));
 
